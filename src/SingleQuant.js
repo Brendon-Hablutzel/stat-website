@@ -1,7 +1,8 @@
 import './SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
-import { getMax, getMean, getMedian, getMin, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
+import { getMax, getMean, getMedian, getMin, getOutliers, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
+import { BoxPlot } from './Graphs';
 
 
 function SingleQuant() {
@@ -20,8 +21,8 @@ function SingleQuant() {
                     if (!validColumns.includes(columnName)) {
                         console.error("Invalid column selected");
                     } else {
-                        const parsedData = receivedData.map(obj => parseFloat(obj[columnName])).filter(item => !isNaN(item));
-                        console.log(parsedData)
+                        let parsedData = receivedData.map(obj => parseFloat(obj[columnName])).filter(item => !isNaN(item));
+                        parsedData.sort((a, b) => a-b);
                         setData(parsedData);
                     } 
                 }
@@ -75,10 +76,11 @@ function SingleQuant() {
                     <button
                         onClick={e => {
                             if (textDataInputRef.current.value) {
-                                const parsedInput = textDataInputRef.current.value.split(" ").map(str => parseFloat(str));
+                                let parsedInput = textDataInputRef.current.value.split(" ").map(str => parseFloat(str));
                                 if (parsedInput.includes(NaN)) {
                                     console.error("Only integers and floats may be inputted")
                                 } else {
+                                    parsedInput.sort((a, b) => a-b);
                                     setData(parsedInput);
                                 }
                             } else {
@@ -111,6 +113,14 @@ function SingleQuant() {
         const mean = getMean(data);
         const stdDev = getStdDev(data);
         const n = data.length;
+        const fiveNumSummary = [
+            getMin(data),
+            getQ1(data),
+            getMedian(data),
+            getQ3(data),
+            getMax(data)
+        ]
+        const outliers = getOutliers(data);
         // normality:
         const standardized = standardize(data);
         const withinOne = numValuesBetween(standardized, -1, 1);
@@ -120,6 +130,12 @@ function SingleQuant() {
             <div className="Analysis">
                 {headerObj}
                 <div style={{overflowWrap: "break-word"}}>Data: {JSON.stringify(data)}</div>
+                <h2>Basic</h2>
+                <h3>Summary Statistics</h3>
+                <h3>Plots</h3>
+                <h2>Normality</h2>
+                <h3>Comparison to Empirical Rule</h3>
+                <h3>Visualization</h3>
                 <ul style={{fontSize: "20px"}}>
                     <li>mean: {mean}</li>
                     <li>sample std dev: {stdDev}</li>
@@ -132,7 +148,11 @@ function SingleQuant() {
                     <li>{withinOne}, or {withinOne / n * 100}% of values are within one s.d.</li>
                     <li>{withinTwo}, or {withinTwo / n * 100}% of values are within two s.d.</li>
                     <li>{withinThree}, or {withinThree / n * 100}% of values are within three s.d.</li>
+                    <li>outliers: {JSON.stringify(outliers)}</li>
                 </ul>
+                <div style={{width: 300}}>
+                <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height={500} />
+                </div>
             </div>
         );
     }

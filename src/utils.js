@@ -13,18 +13,18 @@ const getStdDev = arr => {
     return (getSum(arr.map(item => (mean - item) ** 2)) / (arr.length - 1)) ** (1/2);
 }
 
-const getMedian = arr => {
-    const lengthModTwo = arr.length % 2;
+const getMedian = sortedArr => {
+    const lengthModTwo = sortedArr.length % 2;
     // check for parity
     if (lengthModTwo === 1) {
         // if odd
-        const middleIndex = Math.floor(arr.length / 2); // floor since array indeces start at 0
-        return arr[middleIndex];
+        const middleIndex = Math.floor(sortedArr.length / 2); // floor since array indeces start at 0
+        return sortedArr[middleIndex];
     } else {
         // if even
-        const higherMiddleIndex = arr.length / 2; // higher since array indeces start at 0
+        const higherMiddleIndex = sortedArr.length / 2; // higher since array indeces start at 0
         const lowerMiddleIndex = higherMiddleIndex - 1;
-        return getMean([arr[lowerMiddleIndex], arr[higherMiddleIndex]]);
+        return getMean([sortedArr[lowerMiddleIndex], sortedArr[higherMiddleIndex]]);
     }
 }
 
@@ -36,16 +36,16 @@ const getMax = arr => {
     return arr.reduce((prev, current) => prev < current ? current : prev);
 }
 
-const getQ1 = arr => {
-    const halfLength = Math.floor(arr.length / 2);
-    const firstHalf = arr.slice(0, halfLength);
+const getQ1 = sortedArr => {
+    const halfLength = Math.floor(sortedArr.length / 2);
+    const firstHalf = sortedArr.slice(0, halfLength);
     return getMedian(firstHalf);
 }
 
-const getQ3 = arr => {
-    const halfLength = Math.floor(arr.length / 2);
-    const firstHalf = arr.slice(-halfLength);
-    return getMedian(firstHalf);
+const getQ3 = sortedArr => {
+    const halfLength = Math.floor(sortedArr.length / 2);
+    const lastHalf = sortedArr.slice(-halfLength);
+    return getMedian(lastHalf);
 }
 
 const zScoreToActual = (zScore, mean, stdDev) => {
@@ -67,4 +67,16 @@ const standardize = arr => {
     return arr.map(item => (item - mean) / stdDev);
 }
 
-export { getSum, getMean, getStdDev, getMedian, getMin, getMax, getQ1, getQ3, numValuesBetween, zScoreToActual, actualToZScore, standardize }
+const getOutliers = (sortedArr, q1=null, q3=null) => {
+    if (q1 === null || q3 === null) {
+        q1 = getQ1(sortedArr);
+        q3 = getQ3(sortedArr);
+    }
+    const interquartileRange = q3 - q1;
+    const dist = 1.5 * interquartileRange;
+    const lower = q1 - dist;
+    const upper = q3 + dist;
+    return sortedArr.filter(item => item < lower || item > upper);
+}
+
+export { getSum, getMean, getStdDev, getMedian, getMin, getMax, getQ1, getQ3, numValuesBetween, zScoreToActual, actualToZScore, standardize, getOutliers }
