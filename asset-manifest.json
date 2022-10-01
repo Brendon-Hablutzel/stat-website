@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/stat-website/static/css/main.2dab2fb4.css",
+    "main.js": "/stat-website/static/js/main.638519a1.js",
+    "index.html": "/stat-website/index.html",
+    "main.2dab2fb4.css.map": "/stat-website/static/css/main.2dab2fb4.css.map",
+    "main.638519a1.js.map": "/stat-website/static/js/main.638519a1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2dab2fb4.css",
+    "static/js/main.638519a1.js"
+  ]
+}
