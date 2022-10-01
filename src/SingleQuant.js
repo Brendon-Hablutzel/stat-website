@@ -20,7 +20,8 @@ function SingleQuant() {
                     if (!validColumns.includes(columnName)) {
                         console.error("Invalid column selected");
                     } else {
-                        const parsedData = receivedData.map(obj => parseFloat(obj[columnName]));
+                        const parsedData = receivedData.map(obj => parseFloat(obj[columnName])).filter(item => !isNaN(item));
+                        console.log(parsedData)
                         setData(parsedData);
                     } 
                 }
