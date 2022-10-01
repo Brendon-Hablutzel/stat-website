@@ -1,7 +1,7 @@
 import './SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
-import { getMax, getMean, getMedian, getMin, getQ1, getQ3, getStdDev, numValuesBetween, standardize, zScoreToActual } from './utils';
+import { getMax, getMean, getMedian, getMin, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
 
 
 function SingleQuant() {
