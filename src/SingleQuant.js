@@ -2,7 +2,7 @@ import './SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
 import { getMax, getMean, getMedian, getMin, getOutliers, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
-import { BoxPlot, Histogram } from './Graphs';
+import { BoxPlot, DotPlot, Histogram } from './Graphs';
 
 
 function SingleQuant() {
@@ -132,10 +132,6 @@ function SingleQuant() {
                 <div style={{overflowWrap: "break-word"}}>Data: {JSON.stringify(data)}</div>
                 <h2>Basic</h2>
                 <h3>Summary Statistics</h3>
-                <h3>Plots</h3>
-                <h2>Normality</h2>
-                <h3>Comparison to Empirical Rule</h3>
-                <h3>Visualization</h3>
                 <ul style={{fontSize: "20px"}}>
                     <li>mean: {mean}</li>
                     <li>sample std dev: {stdDev}</li>
@@ -145,17 +141,30 @@ function SingleQuant() {
                     <li>q3: {getQ3(data)}</li>
                     <li>max: {getMax(data)}</li>
                     <li>n: {n}</li>
+                    <li>outliers: {JSON.stringify(outliers)}</li>
+                </ul>
+                <h3>Plots</h3>
+                <div style={{display: "flex", justifyContent:"center", height: "700px"}}>
+                    <div style={{width: "70%", height: "100%"}}>
+                        <div style={{height: "50%"}}>
+                            <Histogram dataList={data} height="100%" />
+                        </div>
+                        <div style={{height: "50%"}}>
+                            <DotPlot dataList={data} height="100%" />
+                        </div>
+                    </div>
+                    <div style={{width: "30%"}}>
+                        <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height="100%" />
+                    </div>
+                </div>
+                <h2>Normality</h2>
+                <ul style={{fontSize: "20px"}}>
                     <li>{withinOne}, or {withinOne / n * 100}% of values are within one s.d.</li>
                     <li>{withinTwo}, or {withinTwo / n * 100}% of values are within two s.d.</li>
                     <li>{withinThree}, or {withinThree / n * 100}% of values are within three s.d.</li>
-                    <li>outliers: {JSON.stringify(outliers)}</li>
                 </ul>
-                <div style={{width: 300}}>
-                    <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height={500} />
-                </div>
-                <div style={{width: 1000}}>
-                    <Histogram dataList={data} height={500} />
-                </div>
+                <h3>Comparison to Empirical Rule</h3>
+                <h3>Visualization</h3>
             </div>
         );
     }

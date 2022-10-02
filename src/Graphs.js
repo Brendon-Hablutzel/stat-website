@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { getFreedmanDiaconisWidth, getMax, getMin, numInBin } from "./utils";
+import { count, getFreedmanDiaconisWidth, getMax, getMin, numInBin } from "./utils";
 
 
 const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
@@ -12,12 +12,6 @@ const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
     const options = {
         chart: {
             type: 'boxPlot',
-            // height: 500
-        },
-        colors: ['#008FFB', '#FEB019'],
-        title: {
-            text: 'Boxplot',
-            align: 'left'
         },
         tooltip: {
             shared: false,
@@ -74,6 +68,7 @@ const Histogram = ({ dataList, height }) => {
     }
     // bins include min, exclude max
     const series = [{
+        name: "data",
         data: binIntervals.map(([binMin, binMax]) => {
             return {
                 x: `${binMin}-${binMax}`,
@@ -86,4 +81,22 @@ const Histogram = ({ dataList, height }) => {
     );
 }
 
-export { BoxPlot, Histogram }
+const DotPlot = ({ dataList, height }) => {
+    const options = {
+        chart: {
+            type: 'scatter'
+        },
+        xaxis: {
+            tickAmount: 10
+        }
+    }
+    const series = [{
+        name: 'data',
+        data: dataList.map((item, index) => [item, count(dataList.slice(0, index+1), item)])
+    }]
+    return (
+        <ReactApexChart options={options} series={series} type="scatter" height={height} />
+    );
+}
+
+export { BoxPlot, Histogram, DotPlot }
