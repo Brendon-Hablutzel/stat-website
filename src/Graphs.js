@@ -1,4 +1,5 @@
 import ReactApexChart from "react-apexcharts";
+import { getFreedmanDiaconisWidth, getMax, getMin, numInBin } from "./utils";
 
 
 const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
@@ -48,4 +49,41 @@ const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
     );
 }
 
-export { BoxPlot }
+const Histogram = ({ dataList, height }) => {
+    const binWidth = getFreedmanDiaconisWidth(dataList);
+    const minimum = getMin(dataList);
+    const maximum = getMax(dataList)
+    const numBins = Math.ceil((maximum - minimum) / binWidth);
+    const binIntervals = [...Array(numBins).keys()].map(
+        binNumber => [minimum + binNumber * binWidth, minimum + (binNumber + 1) * binWidth]
+    );
+    const options = {
+        chart: {
+            type: 'bar',
+            width: '100%'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        bar: {
+            columnWidth: '100%',
+        },
+        xaxis: {
+            tickAmount: numBins,
+        }
+    }
+    // bins include min, exclude max
+    const series = [{
+        data: binIntervals.map(([binMin, binMax]) => {
+            return {
+                x: `${binMin}-${binMax}`,
+                y: numInBin(dataList, binMin, binMax)
+            }
+        })
+    }]
+    return (
+        <ReactApexChart options={options} series={series} type="bar" height={height} />
+    );
+}
+
+export { BoxPlot, Histogram }

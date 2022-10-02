@@ -79,4 +79,37 @@ const getOutliers = (sortedArr, q1=null, q3=null) => {
     return sortedArr.filter(item => item < lower || item > upper);
 }
 
-export { getSum, getMean, getStdDev, getMedian, getMin, getMax, getQ1, getQ3, numValuesBetween, zScoreToActual, actualToZScore, standardize, getOutliers }
+const count = (arr, value) => {
+    return arr.filter(item => item === value).length;
+}
+
+// note: original does not include rounding
+const getFreedmanDiaconisWidth = (arr, interquartileRange=null) => {
+    if (!interquartileRange) {
+        interquartileRange = getQ3(arr) - getQ1(arr);
+    }
+    return Math.ceil((2 * interquartileRange) / (Math.pow(arr.length, 1/3)));
+}
+
+const numInBin = (arr, min, max) => {
+    return arr.filter(item => item >= min && item < max).length;
+}
+
+export { 
+    getSum,
+    getMean,
+    getStdDev, 
+    getMedian, 
+    getMin, 
+    getMax, 
+    getQ1, 
+    getQ3, 
+    numValuesBetween, 
+    zScoreToActual, 
+    actualToZScore, 
+    standardize, 
+    getOutliers,
+    count,
+    getFreedmanDiaconisWidth,
+    numInBin
+}

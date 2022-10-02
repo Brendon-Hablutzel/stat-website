@@ -2,7 +2,7 @@ import './SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
 import { getMax, getMean, getMedian, getMin, getOutliers, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
-import { BoxPlot } from './Graphs';
+import { BoxPlot, Histogram } from './Graphs';
 
 
 function SingleQuant() {
@@ -151,7 +151,10 @@ function SingleQuant() {
                     <li>outliers: {JSON.stringify(outliers)}</li>
                 </ul>
                 <div style={{width: 300}}>
-                <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height={500} />
+                    <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height={500} />
+                </div>
+                <div style={{width: 1000}}>
+                    <Histogram dataList={data} height={500} />
                 </div>
             </div>
         );
