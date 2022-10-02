@@ -58,7 +58,11 @@ const BoxPlot = ({ dataList, height, outliersList=null }) => {
     );
 }
 
-const Histogram = ({ dataList, height }) => {
+
+// the following is an old version of the histogram
+// while it has neater x labels, there are spaces between the bars
+/*
+const BarAsHistogram = ({ dataList, height }) => {
     const binWidth = getFreedmanDiaconisWidth(dataList);
     const minimum = getMin(dataList);
     const maximum = getMax(dataList)
@@ -71,7 +75,7 @@ const Histogram = ({ dataList, height }) => {
             type: 'bar'
         },
         dataLabels: {
-            enabled: false
+            enabled: false,
         },
         bar: {
             columnWidth: '100%'
@@ -94,6 +98,7 @@ const Histogram = ({ dataList, height }) => {
         <ReactApexChart options={options} series={series} type="bar" height={height} />
     );
 }
+*/
 
 const DotPlot = ({ dataList, height }) => {
     const options = {
@@ -112,6 +117,50 @@ const DotPlot = ({ dataList, height }) => {
     }]
     return (
         <ReactApexChart options={options} series={series} type="scatter" height={height} />
+    );
+}
+
+
+const Histogram = ({ dataList, height }) => {
+    const binWidth = getFreedmanDiaconisWidth(dataList);
+    const minimum = getMin(dataList);
+    const maximum = getMax(dataList)
+    const numBins = Math.ceil((maximum - minimum) / binWidth);
+    const binIntervals = [...Array(numBins).keys()].map(
+        binNumber => [minimum + binNumber * binWidth, minimum + (binNumber + 1) * binWidth]
+    );
+    const options = {
+        chart: {
+            type: 'bar'
+        },
+        dataLabels: {
+            enabled: true,
+            // the following can be used to label the bars with their ranges
+            // formatter: (_val, opts) => {
+            //     const intervals = binIntervals[opts.seriesIndex];
+            //     return `${roundTwo(intervals[0])} - ${roundTwo(intervals[1])}`
+            // }
+        },
+        bar: {
+            columnWidth: '100%'
+        },
+        xaxis: {
+            tickAmount: numBins,
+            categories: ["data"],
+            labels: {
+                show: false
+            }
+        }
+    }
+    // bins include min, exclude max
+    const series = binIntervals.map(([binMin, binMax]) => {
+        return {
+            name: `${roundTwo(binMin)}-${roundTwo(binMax)}`,
+            data: [numInBin(dataList, binMin, binMax)]
+        }
+    })
+    return (
+        <ReactApexChart options={options} series={series} type="bar" height={height} />
     );
 }
 
