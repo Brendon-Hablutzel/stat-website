@@ -30,9 +30,12 @@ const BoxPlot = ({ dataList, height, outliersList=null }) => {
         },
         stroke: {
           colors: ['#6c757d']
+        },
+        legend: {
+            show: false
         }
     }
-    const series = [
+    let series = [
         {
             name: 'box',
             type: 'boxPlot',
@@ -42,14 +45,14 @@ const BoxPlot = ({ dataList, height, outliersList=null }) => {
                     y: fiveNumSummary
                 }
             ]
-        },
-        {
-            name: 'outliers',
-            type: 'scatter',
-            data: outliers
         }
     ]
-    console.log(series)
+    outliers.forEach(outlier => {
+        series.push({
+            type: 'scatter',
+            data: [outlier]
+        });
+    })
     return (
         <ReactApexChart options={options} series={series} type="boxPlot" height={height} />
     );
@@ -65,14 +68,13 @@ const Histogram = ({ dataList, height }) => {
     );
     const options = {
         chart: {
-            type: 'bar',
-            width: '100%'
+            type: 'bar'
         },
         dataLabels: {
             enabled: false
         },
         bar: {
-            columnWidth: '100%',
+            columnWidth: '100%'
         },
         xaxis: {
             tickAmount: numBins,
@@ -99,7 +101,7 @@ const DotPlot = ({ dataList, height }) => {
             type: 'scatter'
         },
         xaxis: {
-            tickAmount: 10,
+            tickAmount: 30,
             decimalsInFloat: 2,
             type: "numeric"
         }
@@ -112,5 +114,6 @@ const DotPlot = ({ dataList, height }) => {
         <ReactApexChart options={options} series={series} type="scatter" height={height} />
     );
 }
+
 
 export { BoxPlot, Histogram, DotPlot }

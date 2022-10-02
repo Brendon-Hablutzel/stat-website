@@ -138,7 +138,7 @@ function SingleQuant() {
                 </ul>
                 <h3>Plots</h3>
                 <div style={{display: "flex", justifyContent:"center", height: "700px"}}>
-                    <div style={{width: "70%", height: "100%"}}>
+                    <div style={{width: "80%", height: "100%"}}>
                         <div style={{height: "50%"}}>
                             <Histogram dataList={data} height="100%" />
                         </div>
@@ -146,7 +146,7 @@ function SingleQuant() {
                             <DotPlot dataList={data} height="100%" />
                         </div>
                     </div>
-                    <div style={{width: "30%"}}>
+                    <div style={{width: "20%"}}>
                         <BoxPlot dataList={data} outliersList={outliers} height="100%" />
                     </div>
                 </div>
