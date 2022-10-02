@@ -83,16 +83,19 @@ const count = (arr, value) => {
     return arr.filter(item => item === value).length;
 }
 
-// note: original does not include rounding
 const getFreedmanDiaconisWidth = (arr, interquartileRange=null) => {
     if (!interquartileRange) {
         interquartileRange = getQ3(arr) - getQ1(arr);
     }
-    return Math.ceil((2 * interquartileRange) / (Math.pow(arr.length, 1/3)));
+    return ((2 * interquartileRange) / (Math.pow(arr.length, 1/3)));
 }
 
 const numInBin = (arr, min, max) => {
     return arr.filter(item => item >= min && item < max).length;
+}
+
+const roundTwo = (num) => {
+    return Math.round(num * 100) / 100;
 }
 
 export { 
@@ -111,5 +114,6 @@ export {
     getOutliers,
     count,
     getFreedmanDiaconisWidth,
-    numInBin
+    numInBin,
+    roundTwo
 }

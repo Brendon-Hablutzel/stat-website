@@ -1,8 +1,19 @@
 import ReactApexChart from "react-apexcharts";
-import { count, getFreedmanDiaconisWidth, getMax, getMin, numInBin } from "./utils";
+import { count, getFreedmanDiaconisWidth, getMax, getMedian, getMin, getOutliers, getQ1, getQ3, numInBin, roundTwo } from "./utils";
 
 
-const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
+const BoxPlot = ({ dataList, height, outliersList=null }) => {
+    if (!outliersList) {
+        outliersList = getOutliers(dataList);
+    }
+    const dataNoOutliers = dataList.filter(item => !outliersList.includes(item));
+    const fiveNumSummary = [
+        getMin(dataNoOutliers),
+        getQ1(dataNoOutliers),
+        getMedian(dataNoOutliers),
+        getQ3(dataNoOutliers),
+        getMax(dataNoOutliers)
+    ]
     const outliers = outliersList.map(num => {
         return {
             x: "data",
@@ -38,6 +49,7 @@ const BoxPlot = ({ fiveNumSummary, height, outliersList }) => {
             data: outliers
         }
     ]
+    console.log(series)
     return (
         <ReactApexChart options={options} series={series} type="boxPlot" height={height} />
     );
@@ -71,7 +83,7 @@ const Histogram = ({ dataList, height }) => {
         name: "data",
         data: binIntervals.map(([binMin, binMax]) => {
             return {
-                x: `${binMin}-${binMax}`,
+                x: `${roundTwo(binMin)}-${roundTwo(binMax)}`,
                 y: numInBin(dataList, binMin, binMax)
             }
         })
@@ -87,7 +99,9 @@ const DotPlot = ({ dataList, height }) => {
             type: 'scatter'
         },
         xaxis: {
-            tickAmount: 10
+            tickAmount: 10,
+            decimalsInFloat: 2,
+            type: "numeric"
         }
     }
     const series = [{

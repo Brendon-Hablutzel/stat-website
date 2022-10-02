@@ -113,13 +113,6 @@ function SingleQuant() {
         const mean = getMean(data);
         const stdDev = getStdDev(data);
         const n = data.length;
-        const fiveNumSummary = [
-            getMin(data),
-            getQ1(data),
-            getMedian(data),
-            getQ3(data),
-            getMax(data)
-        ]
         const outliers = getOutliers(data);
         // normality:
         const standardized = standardize(data);
@@ -154,7 +147,7 @@ function SingleQuant() {
                         </div>
                     </div>
                     <div style={{width: "30%"}}>
-                        <BoxPlot fiveNumSummary={fiveNumSummary} outliersList={outliers} height="100%" />
+                        <BoxPlot dataList={data} outliersList={outliers} height="100%" />
                     </div>
                 </div>
                 <h2>Normality</h2>
