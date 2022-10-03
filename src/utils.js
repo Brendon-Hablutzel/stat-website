@@ -98,6 +98,10 @@ const roundTwo = (num) => {
     return Math.round(num * 100) / 100;
 }
 
+const actualToPercentile = (arr, actual) => {
+    return arr.filter(element => element <= actual).length / arr.length
+}
+
 export { 
     getSum,
     getMean,
@@ -115,5 +119,6 @@ export {
     count,
     getFreedmanDiaconisWidth,
     numInBin,
-    roundTwo
+    roundTwo,
+    actualToPercentile,
 }

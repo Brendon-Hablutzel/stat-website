@@ -1,12 +1,29 @@
 import './SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
-import { getMax, getMean, getMedian, getMin, getOutliers, getQ1, getQ3, getStdDev, numValuesBetween, standardize } from './utils';
+import { actualToPercentile, 
+    actualToZScore, 
+    getMax, 
+    getMean, 
+    getMedian, 
+    getMin, 
+    getOutliers, 
+    getQ1, 
+    getQ3, 
+    getStdDev, 
+    numValuesBetween, 
+    standardize, 
+    zScoreToActual 
+} from './utils';
 import { BoxPlot, DotPlot, Histogram } from './Graphs';
 
 
 function SingleQuant() {
     const [data, setData] = useState(null);
+    // for converters
+    const [zScoreFromActualValue, setZScoreFromActualValue] = useState(null);
+    const [actualValueFromZScore, setActualValueFromZScore] = useState(null);
+    const [percentileFromActualValue, setPercentileFromActualValue] = useState(null);
 
     const fileUploaded = (fileUploadRef, columnName) => {
         Papa.parse(fileUploadRef.current.files[0], {
@@ -123,8 +140,7 @@ function SingleQuant() {
             <div className="Analysis">
                 {headerObj}
                 <div style={{overflowWrap: "break-word"}}>Data: {JSON.stringify(data)}</div>
-                <h2>Basic</h2>
-                <h3>Summary Statistics</h3>
+                <h2>Summary Statistics</h2>
                 <ul style={{fontSize: "20px"}}>
                     <li>mean: {mean}</li>
                     <li>sample std dev: {stdDev}</li>
@@ -136,7 +152,7 @@ function SingleQuant() {
                     <li>n: {n}</li>
                     <li>outliers: {JSON.stringify(outliers)}</li>
                 </ul>
-                <h3>Plots</h3>
+                <h2>Plots</h2>
                 <div style={{display: "flex", justifyContent:"center", height: "700px"}}>
                     <div style={{width: "80%", height: "100%"}}>
                         <div style={{height: "50%"}}>
@@ -150,14 +166,66 @@ function SingleQuant() {
                         <BoxPlot dataList={data} outliersList={outliers} height="100%" />
                     </div>
                 </div>
+                <div>
+                    <h2>Location</h2>
+                    <h3>Convert z-score to actual value</h3>
+                    <div style={{ fontSize: "20px" }}>
+                        Z-Score: <input
+                            type="number"
+                            placeholder="z-score"
+                            onChange={e => {
+                                const enteredZScore = e.target.value;
+                                if (enteredZScore !== "") {
+                                    setActualValueFromZScore(zScoreToActual(parseFloat(enteredZScore), mean, stdDev));
+                                } else {
+                                    setActualValueFromZScore(null);
+                                }
+                            }}
+                        />
+                        <br />
+                        Actual Value: <strong>{actualValueFromZScore}</strong>
+                    </div>
+                    <h3>Convert actual value to z-score</h3>
+                    <div style={{ fontSize: "20px" }}>
+                        Actual Value: <input
+                            type="number"
+                            placeholder="actual value"
+                            onChange={e => {
+                                const enteredActual = e.target.value;
+                                if (enteredActual !== "") {
+                                    setZScoreFromActualValue(actualToZScore(parseFloat(enteredActual), mean, stdDev));
+                                } else {
+                                    setZScoreFromActualValue(null);
+                                }
+                            }}
+                        />
+                        <br />
+                        Z-Score: <strong>{zScoreFromActualValue}</strong>
+                    </div>
+                    <h3>Convert actual value to percentile</h3>
+                    <div style={{ fontSize: "20px" }}>
+                        Actual value: <input
+                            type="number"
+                            placeholder="actual value"
+                            onChange={e => {
+                                const enteredValue = e.target.value;
+                                if (enteredValue !== "") {
+                                    setPercentileFromActualValue(actualToPercentile(data, parseFloat(enteredValue)));
+                                } else {
+                                    setPercentileFromActualValue(null);
+                                }
+                            }}
+                        />
+                        <br />
+                        Percentile (proportion): <strong>{percentileFromActualValue}</strong>
+                    </div>
+                </div>
                 <h2>Normality</h2>
                 <ul style={{fontSize: "20px"}}>
                     <li>{withinOne}, or {withinOne / n * 100}% of values are within one s.d.</li>
                     <li>{withinTwo}, or {withinTwo / n * 100}% of values are within two s.d.</li>
                     <li>{withinThree}, or {withinThree / n * 100}% of values are within three s.d.</li>
                 </ul>
-                <h3>Comparison to Empirical Rule</h3>
-                <h3>Visualization</h3>
             </div>
         );
     }
