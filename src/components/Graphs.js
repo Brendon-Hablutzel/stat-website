@@ -1,5 +1,16 @@
 import ReactApexChart from "react-apexcharts";
-import { count, getFreedmanDiaconisWidth, getMax, getMedian, getMin, getOutliers, getQ1, getQ3, numInBin, roundTwo } from "./utils";
+import { 
+    count, 
+    getFreedmanDiaconisWidth, 
+    getMax, 
+    getMedian, 
+    getMin, 
+    getOutliers, 
+    getQ1, 
+    getQ3, 
+    numInBin, 
+    roundTwo 
+} from "./../utils";
 
 
 const BoxPlot = ({ dataList, height, outliersList=null }) => {

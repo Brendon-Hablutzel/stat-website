@@ -1,4 +1,4 @@
-import './SingleQuant.css';
+import './../styles/SingleQuant.css';
 import Papa from 'papaparse';
 import { useRef, useState } from 'react';
 import { actualToPercentile, 
@@ -14,11 +14,11 @@ import { actualToPercentile,
     numValuesBetween, 
     standardize, 
     zScoreToActual 
-} from './utils';
+} from '../utils';
 import { BoxPlot, DotPlot, Histogram } from './Graphs';
 
 
-function SingleQuant() {
+export default function SingleQuant() {
     const [data, setData] = useState(null);
     // for converters
     const [zScoreFromActualValue, setZScoreFromActualValue] = useState(null);
@@ -112,7 +112,7 @@ function SingleQuant() {
         </div>
     );
     
-    const headerObj = <h1 style={{textAlign: "center"}}>Single Quantitative Variable</h1>;
+    const headerObj = <h1 style={{textAlign: "center"}}>One Quantitative Variable</h1>;
 
     if (!data) {
         return (
@@ -230,5 +230,3 @@ function SingleQuant() {
         );
     }
 }
-
-export default SingleQuant;
