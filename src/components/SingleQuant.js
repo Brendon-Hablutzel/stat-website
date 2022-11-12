@@ -16,13 +16,87 @@ import { actualToPercentile,
 } from '../utils';
 import { BoxPlot, DotPlot, Histogram } from './Graphs';
 
-export default function SingleQuant() {
-    const [data, setData] = useState(null);
-    // for converters
+function Converters({ data, mean, stdDev }) {
     const [zScoreFromActualValue, setZScoreFromActualValue] = useState(null);
     const [actualValueFromZScore, setActualValueFromZScore] = useState(null);
     const [percentileFromActualValue, setPercentileFromActualValue] = useState(null);
+    return (
+        <div>
+            <h3>Convert z-score to actual value</h3>
+            <div style={{ fontSize: "20px" }}>
+                Z-Score: <input
+                    type="number"
+                    placeholder="z-score"
+                    onChange={e => {
+                        const enteredZScore = e.target.value;
+                        if (enteredZScore !== "") {
+                            setActualValueFromZScore(
+                                zScoreToActual(
+                                    parseFloat(enteredZScore),
+                                    mean,
+                                    stdDev
+                                )
+                            );
+                        } else {
+                            setActualValueFromZScore(null);
+                        }
+                    }}
+                />
+                <br />
+                Actual Value: <strong>{actualValueFromZScore}</strong>
+            </div>
+            <h3>Convert actual value to z-score</h3>
+            <div style={{ fontSize: "20px" }}>
+                Actual Value: <input
+                    type="number"
+                    placeholder="actual value"
+                    onChange={e => {
+                        const enteredActual = e.target.value;
+                        if (enteredActual !== "") {
+                            setZScoreFromActualValue(
+                                actualToZScore(
+                                    parseFloat(enteredActual),
+                                    mean,
+                                    stdDev
+                                )
+                            );
+                        } else {
+                            setZScoreFromActualValue(null);
+                        }
+                    }}
+                />
+                <br />
+                Z-Score: <strong>{zScoreFromActualValue}</strong>
+            </div>
+            <h3>Convert actual value to percentile</h3>
+            <div style={{ fontSize: "20px" }}>
+                Actual value: <input
+                    type="number"
+                    placeholder="actual value"
+                    onChange={e => {
+                        const enteredValue = e.target.value;
+                        if (enteredValue !== "") {
+                            setPercentileFromActualValue(
+                                actualToPercentile(
+                                    data,
+                                    parseFloat(enteredValue)
+                                )
+                            );
+                        } else {
+                            setPercentileFromActualValue(null);
+                        }
+                    }}
+                />
+                <br />
+                Percentile (proportion): <strong>{percentileFromActualValue}</strong>
+            </div>
+        </div>
+    )
+}
 
+export default function SingleQuant() {
+    const [data, setData] = useState(null);
+    
     const categoryInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const fileInput = (
@@ -149,77 +223,12 @@ export default function SingleQuant() {
                         <BoxPlot dataList={data} outliersList={outliers} height="100%" />
                     </div>
                 </div>
-                <div>
-                    <h2>Location</h2>
-                    <h3>Convert z-score to actual value</h3>
-                    <div style={{ fontSize: "20px" }}>
-                        Z-Score: <input
-                            type="number"
-                            placeholder="z-score"
-                            onChange={e => {
-                                const enteredZScore = e.target.value;
-                                if (enteredZScore !== "") {
-                                    setActualValueFromZScore(
-                                        zScoreToActual(
-                                            parseFloat(enteredZScore),
-                                            mean,
-                                            stdDev
-                                        )
-                                    );
-                                } else {
-                                    setActualValueFromZScore(null);
-                                }
-                            }}
-                        />
-                        <br />
-                        Actual Value: <strong>{actualValueFromZScore}</strong>
-                    </div>
-                    <h3>Convert actual value to z-score</h3>
-                    <div style={{ fontSize: "20px" }}>
-                        Actual Value: <input
-                            type="number"
-                            placeholder="actual value"
-                            onChange={e => {
-                                const enteredActual = e.target.value;
-                                if (enteredActual !== "") {
-                                    setZScoreFromActualValue(
-                                        actualToZScore(
-                                            parseFloat(enteredActual),
-                                            mean,
-                                            stdDev
-                                        )
-                                    );
-                                } else {
-                                    setZScoreFromActualValue(null);
-                                }
-                            }}
-                        />
-                        <br />
-                        Z-Score: <strong>{zScoreFromActualValue}</strong>
-                    </div>
-                    <h3>Convert actual value to percentile</h3>
-                    <div style={{ fontSize: "20px" }}>
-                        Actual value: <input
-                            type="number"
-                            placeholder="actual value"
-                            onChange={e => {
-                                const enteredValue = e.target.value;
-                                if (enteredValue !== "") {
-                                    setPercentileFromActualValue(
-                                        actualToPercentile(
-                                            data,
-                                            parseFloat(enteredValue)
-                                        )
-                                    );
-                                } else {
-                                    setPercentileFromActualValue(null);
-                                }
-                            }}
-                        />
-                        <br />
-                        Percentile (proportion): <strong>{percentileFromActualValue}</strong>
-                    </div>
-                </div>
+                <h2>Location</h2>
+                <Converters
+                    data={data}
+                    mean={mean}
+                    stdDev={stdDev}
+                />
                 <h2>Normality</h2>
                 <ul style={{fontSize: "20px"}}>
                     <li>{withinOne}, or {withinOne / n * 100}% of values are within one s.d.</li>

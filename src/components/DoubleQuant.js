@@ -2,10 +2,30 @@ import Chart from "react-apexcharts";
 import { roundTwo, getStdDev, fileUploaded, getMean, getMin, getMax } from '../utils';
 import { useRef, useState } from 'react';
 
+function ApplyLinReg({LSRL}) {
+    const [regressionOutput, setRegressionOutput] = useState("");
+    return (
+        <div style={{ fontSize: "20px" }}>
+            X: <input
+                type="number"
+                placeholder="x"
+                onChange={e => {
+                    const x = e.target.value;
+                    if (x !== "") {
+                        setRegressionOutput(LSRL(x));
+                    } else {
+                        setRegressionOutput("");
+                    }
+                }}
+            />
+            <br />
+            Y: <strong>{regressionOutput}</strong>
+        </div>
+    );
+}
+
 export default function DoubleQuant() {
     const [data, setData] = useState(null);
-
-    const [regressionOutput, setRegressionOutput] = useState("");
 
     const categoryOneInputRef = useRef(null);
     const categoryTwoInputRef = useRef(null);
@@ -206,22 +226,9 @@ export default function DoubleQuant() {
                 <Chart options={scatterplotOptions} series={scatterplotSeries} type="line" width="500" />
                 <p>n = {n}</p>
                 <p>Least-Squares Regression Line Equation: <strong>{m} * x + {b}</strong></p>
-                <div style={{ fontSize: "20px" }}>
-                    X: <input
-                        type="number"
-                        placeholder="x"
-                        onChange={e => {
-                            const x = e.target.value;
-                            if (x !== "") {
-                                setRegressionOutput(LSRL(x));
-                            } else {
-                                setRegressionOutput("");
-                            }
-                        }}
-                    />
-                    <br />
-                    Y: <strong>{regressionOutput}</strong>
-                </div>
+                <ApplyLinReg
+                    LSRL={LSRL}
+                />
                 <h2>Residual Plot</h2>
                 <Chart
                     options={residualplotOptions}
