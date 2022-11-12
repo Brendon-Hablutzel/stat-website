@@ -1,3 +1,4 @@
+import Papa from 'papaparse';
 
 const getSum = arr => {
     return arr.reduce((prev, current) => prev += current);
@@ -102,6 +103,47 @@ const actualToPercentile = (arr, actual) => {
     return arr.filter(element => element <= actual).length / arr.length
 }
 
+const intersection = (arr1, arr2) => {
+    return arr1.filter(val => arr2.includes(val));
+}
+
+const arrContainsNaN = (arr) => {
+    const numNaN = arr.filter(val => isNaN(val));
+    return numNaN.length > 0;
+}
+
+const fileUploaded = (fileUploadRef, columnNames, setData) => {
+    Papa.parse(fileUploadRef.current.files[0], {
+        header: true,
+        skipEmptyLines: true,
+        complete: results => {
+            const receivedData = results.data;
+            if (receivedData.length === 0) {
+                console.error("No data in file");
+            } else {
+                const validColumns = Object.keys(receivedData[0]);
+                if (columnNames.length !== intersection(columnNames, validColumns).length) {
+                    console.error("Invalid column selected");
+                } else {
+                    let parsedData;
+                    if (columnNames.length === 1) {
+                        parsedData = receivedData
+                            .map(obj => parseFloat(obj[columnNames[0]]))
+                            .filter(item => !isNaN(item));
+                        parsedData.sort((a, b) => a-b);
+                    } else {
+                        parsedData = receivedData
+                            .map(obj => columnNames.map((colName) => parseFloat(obj[colName])))
+                            .filter(point => !arrContainsNaN(point));
+                        parsedData.sort((pointA, pointB) => pointA[0] - pointB[0])
+                    }
+                    setData(parsedData);
+                } 
+            }
+        }
+    });
+}
+
 export { 
     getSum,
     getMean,
@@ -121,4 +163,5 @@ export {
     numInBin,
     roundTwo,
     actualToPercentile,
+    fileUploaded
 }

@@ -1,8 +1,8 @@
 import './../styles/SingleQuant.css';
-import Papa from 'papaparse';
 import { useRef, useState } from 'react';
 import { actualToPercentile, 
     actualToZScore, 
+    fileUploaded, 
     getMax, 
     getMean, 
     getMedian, 
@@ -25,28 +25,6 @@ export default function SingleQuant() {
     const [actualValueFromZScore, setActualValueFromZScore] = useState(null);
     const [percentileFromActualValue, setPercentileFromActualValue] = useState(null);
 
-    const fileUploaded = (fileUploadRef, columnName) => {
-        Papa.parse(fileUploadRef.current.files[0], {
-            header:true,
-            skipEmptyLines:true,
-            complete: function (results) {
-                const receivedData = results.data;
-                if (receivedData.length === 0) {
-                    console.error("No data in file");
-                } else {
-                    const validColumns = Object.keys(receivedData[0]);
-                    if (!validColumns.includes(columnName)) {
-                        console.error("Invalid column selected");
-                    } else {
-                        let parsedData = receivedData.map(obj => parseFloat(obj[columnName])).filter(item => !isNaN(item));
-                        parsedData.sort((a, b) => a-b);
-                        setData(parsedData);
-                    } 
-                }
-            }
-        });
-    }
-
     const categoryInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const fileInput = (
@@ -67,7 +45,7 @@ export default function SingleQuant() {
             <button
                 onClick={e => {
                     if (categoryInputRef.current.value) {
-                        fileUploaded(fileInputRef, categoryInputRef.current.value);
+                        fileUploaded(fileInputRef, [categoryInputRef.current.value], setData);
                     } else {
                         console.error("No category inputted");
                     }
