@@ -1,4 +1,3 @@
-import './../styles/SingleQuant.css';
 import { useRef, useState } from 'react';
 import { actualToPercentile, 
     actualToZScore, 
@@ -17,7 +16,6 @@ import { actualToPercentile,
 } from '../utils';
 import { BoxPlot, DotPlot, Histogram } from './Graphs';
 
-
 export default function SingleQuant() {
     const [data, setData] = useState(null);
     // for converters
@@ -28,21 +26,24 @@ export default function SingleQuant() {
     const categoryInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const fileInput = (
-        <div className="fileInput">
-            <h2 style={{textAlign: "center"}}>Input from file</h2>
+        <div style={{ border: "1px solid black", margin: "10px", padding: "10px" }}>
+            <h2 style={{ textAlign: "center" }}>Input from file</h2>
             <br />
             <input
                 type="file"
                 name="file"
                 accept=".csv"
                 ref={fileInputRef}
+                style={{ fontSize: "20px" }}
             />
             <input
                 type="text"
                 placeholder="Column Name"
                 ref={categoryInputRef}
+                style={{ fontSize: "20px "}}
             />
             <button
+                style={{ fontSize: "20px" }}
                 onClick={e => {
                     if (categoryInputRef.current.value) {
                         fileUploaded(fileInputRef, [categoryInputRef.current.value], setData);
@@ -58,7 +59,7 @@ export default function SingleQuant() {
     
     const textDataInputRef = useRef(null);
     const textDataInput = (
-        <div className="textDataInput">
+        <div style={{ border: "1px solid black", margin: "10px", padding: "10px" }}>
             <h2 style={{textAlign: "center"}}>Input from text (values separated by spaces)</h2>
             <br />
             <div style={{display: "flex", justifyContent: "space-around"}}>
@@ -67,11 +68,15 @@ export default function SingleQuant() {
                         type="text"
                         name="text"
                         ref={textDataInputRef}
+                        style={{ fontSize: "20px" }}
                     />
                     <button
+                        style={{ fontSize: "20px" }}
                         onClick={e => {
                             if (textDataInputRef.current.value) {
-                                let parsedInput = textDataInputRef.current.value.split(" ").map(str => parseFloat(str));
+                                let parsedInput = textDataInputRef.current.value
+                                    .split(" ")
+                                    .map(str => parseFloat(str));
                                 if (parsedInput.includes(NaN)) {
                                     console.error("Only integers and floats may be inputted")
                                 } else {
@@ -94,7 +99,7 @@ export default function SingleQuant() {
 
     if (!data) {
         return (
-            <div className="Inputs">
+            <div style={{ padding: "10px" }}>
                 {headerObj}
                 <div style={{display: "flex", justifyContent: "space-around"}}>
                     {fileInput}
@@ -115,7 +120,7 @@ export default function SingleQuant() {
         const withinTwo = numValuesBetween(standardized, -2, 2);
         const withinThree = numValuesBetween(standardized, -3, 3);
         return (
-            <div className="Analysis">
+            <div style={{ padding: "10px" }}>
                 {headerObj}
                 <div style={{overflowWrap: "break-word"}}>Data: {JSON.stringify(data)}</div>
                 <h2>Summary Statistics</h2>
@@ -154,7 +159,13 @@ export default function SingleQuant() {
                             onChange={e => {
                                 const enteredZScore = e.target.value;
                                 if (enteredZScore !== "") {
-                                    setActualValueFromZScore(zScoreToActual(parseFloat(enteredZScore), mean, stdDev));
+                                    setActualValueFromZScore(
+                                        zScoreToActual(
+                                            parseFloat(enteredZScore),
+                                            mean,
+                                            stdDev
+                                        )
+                                    );
                                 } else {
                                     setActualValueFromZScore(null);
                                 }
@@ -171,7 +182,13 @@ export default function SingleQuant() {
                             onChange={e => {
                                 const enteredActual = e.target.value;
                                 if (enteredActual !== "") {
-                                    setZScoreFromActualValue(actualToZScore(parseFloat(enteredActual), mean, stdDev));
+                                    setZScoreFromActualValue(
+                                        actualToZScore(
+                                            parseFloat(enteredActual),
+                                            mean,
+                                            stdDev
+                                        )
+                                    );
                                 } else {
                                     setZScoreFromActualValue(null);
                                 }
@@ -188,7 +205,12 @@ export default function SingleQuant() {
                             onChange={e => {
                                 const enteredValue = e.target.value;
                                 if (enteredValue !== "") {
-                                    setPercentileFromActualValue(actualToPercentile(data, parseFloat(enteredValue)));
+                                    setPercentileFromActualValue(
+                                        actualToPercentile(
+                                            data,
+                                            parseFloat(enteredValue)
+                                        )
+                                    );
                                 } else {
                                     setPercentileFromActualValue(null);
                                 }
